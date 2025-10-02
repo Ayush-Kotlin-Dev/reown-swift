@@ -131,7 +131,7 @@ let package = Package(
             resources: [.process("Resources/PrivacyInfo.xcprivacy")]),
         .target(
             name: "WalletConnectSigner",
-            dependencies: ["WalletConnectNetworking"]),
+            dependencies: ["WalletConnectNetworking", "YttriumWrapper"]),
         .target(
             name: "WalletConnectJWT",
             dependencies: ["WalletConnectKMS"]),
