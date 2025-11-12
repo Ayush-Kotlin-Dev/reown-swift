@@ -24,10 +24,12 @@ let yttriumTarget = buildYttriumWrapperTarget()
 
 let yttriumUtilsTarget = buildYttriumUtilsWrapperTarget()
 
+let yttriumFFITarget = buildYttriumFFIBinaryTarget()
+
 func buildYttriumWrapperTarget() -> Target {
     .target(
         name: "YttriumWrapper",
-        dependencies: [.product(name: "Yttrium", package: "yttrium")],
+        dependencies: ["yttriumFFI", .product(name: "Yttrium", package: "yttrium")],
         path: "Sources/YttriumWrapper"
     )
 }
@@ -37,6 +39,21 @@ func buildYttriumUtilsWrapperTarget() -> Target {
         name: "YttriumUtilsWrapper",
         dependencies: [.product(name: "YttriumUtils", package: "yttrium")],
         path: "Sources/YttriumUtilsWrapper"
+    )
+}
+
+func buildYttriumFFIBinaryTarget() -> Target {
+    if yttriumDebug {
+        return .binaryTarget(
+            name: "yttriumFFI",
+            path: "../yttrium/target/ios/libyttrium.xcframework"
+        )
+    }
+
+    return .binaryTarget(
+        name: "yttriumFFI",
+        url: "https://github.com/reown-com/yttrium/releases/download/0.9.75/libyttrium.xcframework.zip",
+        checksum: "7e1f54b3379cc0d53a165636868a8d823d8a6efdb37c772ca33bc2a7b6c9c978"
     )
 }
 
@@ -89,7 +106,7 @@ let package = Package(
             targets: ["YttriumUtilsWrapper"]),
         .library(
             name: "yttriumFFI",
-            targets: ["YttriumWrapper"]),
+            targets: ["yttriumFFI"])
         .library(
             name: "yttriumUtilsFFI",
             targets: ["YttriumUtilsWrapper"])
@@ -201,6 +218,7 @@ let package = Package(
             name: "ReownAppKitBackport",
             path: "Sources/ReownAppKitBackport"
         ),
+        yttriumFFITarget,
         yttriumTarget,
         yttriumUtilsTarget,
         .testTarget(
